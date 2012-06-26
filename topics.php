@@ -2508,7 +2508,7 @@ class public_forums_forums_topics extends ipsCommand
 			$query_steam = $this->DB->execute();
 			$row_steam = $this->DB->fetch($query_steam);			
 			//вычисляем ранг
-			$link = mysql_connect('stalin-server.ru', 'web913612_sj', 'yes47noasdfg820330');
+			$link = mysql_connect('host', 'user', 'pass');
 			mysql_select_db('web913612_ps', $link);
 			$result = mysql_query("SELECT rank FROM ps_plr WHERE uniqueid = '".$row_steam['steam']."'");
 			$row_rank = mysql_fetch_row($result);			
