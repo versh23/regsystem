@@ -17,34 +17,31 @@ CREATE TABLE IF NOT EXISTS `ibf_srr_hdd` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 */
-//new pcv_host, pcv_db, pcv_user, pcv_password;
+new pcv_host, pcv_user, pcv_password;
 new Handle:g_SQLTuple;
 new g_Reason; //1 - esli banned
 new Float:g_PrevRegAttemptTime[33];
 //new Float:g_Point;new Float:g_Point2;
 new arg[1];
 public plugin_init() {
-	register_plugin("Reg System", "0.4.3", "lee")
-	/*
-	pcv_host = register_cvar("srr_stats_host", "127.0.0.1");
-	pcv_db = register_cvar("srr_stats_db", "test");
-	pcv_user = register_cvar("srr_stats_user", "root");
-	pcv_password = register_cvar("srr_stats_password", "");
-	*/	
+	register_plugin("Reg System", "0.4.4", "lee")
+	
+	pcv_host = register_cvar("monic_host", "127.0.0.1");	
+	pcv_user = register_cvar("monic_login", "root");
+	pcv_password = register_cvar("monic_pass", "");
+		
 	register_clcmd("reg_forum", "cmdRegForum");
 	register_srvcmd("reg_kick", "cmdRegKick");
 }
 
-
 public plugin_cfg() {	
-	/*
-	new host[64], db[64], user[64], password[64];
-	get_pcvar_string(pcv_host, host, charsmax(hostf));
-	get_pcvar_string(pcv_db, db, charsmax(db));
+	
+	new host[64], user[64], password[64];
+	get_pcvar_string(pcv_host, host, charsmax(host));	
 	get_pcvar_string(pcv_user, user, charsmax(user));
 	get_pcvar_string(pcv_password, password, charsmax(password));
-	*/
-	g_SQLTuple = SQL_MakeDbTuple("host", "login", "pass", "db_name")
+	
+	g_SQLTuple = SQL_MakeDbTuple(host, user, password, "web913612_forum")
 }
 
 public cmdRegKick()
@@ -254,7 +251,10 @@ public q_handle(i_FailState, Handle:h_Query, s_Error[], i_Errcode, s_Data[], i_D
     if (i_FailState == TQUERY_CONNECT_FAILED)
         set_fail_state("Could not connect to database.")
     else if (i_FailState == TQUERY_QUERY_FAILED)
-        set_fail_state("Query q_handle failed.")
+		{
+			log_amx("sql error: %d (%s)", i_Errcode, s_Error);
+			set_fail_state("Query q_handle failed.");
+		}
     else if (i_Errcode)
         log_amx("Error on query: %s", s_Error)
 	//else log_amx("[REGSYSTEM] end of insert/update - >> %f",get_gametime()-g_Point2);
