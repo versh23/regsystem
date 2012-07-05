@@ -225,7 +225,7 @@ public Check_steam(i_FailState, Handle:h_Query, s_Error[], i_Errcode, s_Data[], 
 			new s_Query[128];
 			get_user_authid(s_Data[0], steam, 31);
 			format(s_Query, charsmax(s_Query), "INSERT INTO `ibf_srr_steam` (`hddsn`, `steam`, `date`) VALUES ('%s', '%s', '%s')",hddsn, steam,dt);
-			//log_amx("[REGSYSTEM] %s",s_Query);
+			log_amx("[REGSYSTEM] FAILED QUERY %s",s_Query);
 			log_amx("[REGSYSTEM] Check_steam - >> %f",f_QueueTime);
 			SQL_FreeHandle(h_Query);
 			SQL_ThreadQuery(g_SQLTuple, "q_handle", s_Query);
