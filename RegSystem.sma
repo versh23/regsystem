@@ -24,7 +24,7 @@ new Float:g_PrevRegAttemptTime[33];
 //new Float:g_Point;new Float:g_Point2;
 new arg[1];
 public plugin_init() {
-	register_plugin("Reg System", "0.4.4", "lee")
+	register_plugin("Reg System", "0.4.4_debug", "lee")
 	
 	pcv_host = register_cvar("monic_host", "127.0.0.1");	
 	pcv_user = register_cvar("monic_login", "root");
