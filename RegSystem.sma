@@ -24,7 +24,7 @@ new Float:g_PrevRegAttemptTime[33];
 //new Float:g_Point;new Float:g_Point2;
 new arg[1];
 public plugin_init() {
-	register_plugin("Reg System", "0.4.4_debug", "lee")
+	register_plugin("Reg System", "0.5", "lee")
 	
 	pcv_host = register_cvar("monic_host", "127.0.0.1");	
 	pcv_user = register_cvar("monic_login", "root");
@@ -126,7 +126,7 @@ public Check_ex_steam(i_FailState, Handle:h_Query, s_Error[], i_Errcode, s_Data[
 			qData[0]=s_Data[0];
 			new steam[32];get_user_authid(s_Data[0], steam, 31);
 			format(s_Query, charsmax(s_Query), "SELECT ibf_srr_hdd.id FROM ibf_srr_hdd INNER JOIN ibf_srr_steam ON ibf_srr_hdd.hddsn = ibf_srr_steam.hddsn WHERE ibf_srr_steam.steam='%s'", steam);
-			log_amx("[REGSYSTEM] Check_ex_steam - >> %f",f_QueueTime);				
+			log_amx("[REGSYSTEM] Check_ex_steam: est takou steam yje, proverim hddsn  - >> %f ^n",f_QueueTime);				
 			SQL_FreeHandle(h_Query);
 			SQL_ThreadQuery(g_SQLTuple, "Check_hddsn", s_Query,qData,1);
 	
@@ -137,7 +137,7 @@ public Check_ex_steam(i_FailState, Handle:h_Query, s_Error[], i_Errcode, s_Data[
 			new qData[1];
 			qData[0]=s_Data[0];			
 			format(s_Query, charsmax(s_Query), "SELECT id FROM ibf_srr_hdd WHERE hddsn='%s'", hddsn);
-			log_amx("[REGSYSTEM] Check_ex_steam2 - >> %f",f_QueueTime);			
+			log_amx("[REGSYSTEM] Check_ex_steam: steame net, proverim hddsn - >> %f ^n",f_QueueTime);			
 			SQL_FreeHandle(h_Query);
 			SQL_ThreadQuery(g_SQLTuple, "Check_hddsn", s_Query,qData,1);
 		}
@@ -194,12 +194,12 @@ public Check_reg(i_FailState, Handle:h_Query, s_Error[], i_Errcode, s_Data[], i_
 			//log_amx("[REGSYSTEM] Check_reg %s",s_Query);
 			new qData[1];
 			qData[0]=s_Data[0];	
-			log_amx("[REGSYSTEM] Check_reg - >> %f",f_QueueTime);
+			log_amx("[REGSYSTEM] Check_reg: zaregan na forume, proverka steam - >> %f ^n",f_QueueTime);
 			SQL_FreeHandle(h_Query);
 			SQL_ThreadQuery(g_SQLTuple, "Check_steam", s_Query,qData,1);
 	}else{
 			//log_amx("[REGSYSTEM] not registered on forum - >> %f",get_gametime()-g_Point2);
-			log_amx("[REGSYSTEM] Check_reg2 - >> %f",f_QueueTime);
+			log_amx("[REGSYSTEM] Check_reg: ne zaregan na forume - >> %f ^n",f_QueueTime);
 			return PLUGIN_CONTINUE;
 	}
 	return PLUGIN_CONTINUE;
@@ -213,7 +213,7 @@ public Check_steam(i_FailState, Handle:h_Query, s_Error[], i_Errcode, s_Data[], 
     else if (i_Errcode)
         log_amx("Error on query: %s", s_Error)
     else
-        if (!SQL_NumResults(h_Query))//такой стим уже есть, тогда обновляем
+        if (!SQL_NumResults(h_Query))
 	{		
 			//log_amx("[REGSYSTEM] lets inserrt");
 			//insert
@@ -222,14 +222,14 @@ public Check_steam(i_FailState, Handle:h_Query, s_Error[], i_Errcode, s_Data[], 
 			new hddsn[32];	
 			get_user_info(s_Data[0], "*hwID", hddsn, 32) 	
 			get_time("%Y-%m-%d %X",dt,31) 
-			new s_Query[128];
+			new s_Query[256];
 			get_user_authid(s_Data[0], steam, 31);
 			format(s_Query, charsmax(s_Query), "INSERT INTO `ibf_srr_steam` (`hddsn`, `steam`, `date`) VALUES ('%s', '%s', '%s')",hddsn, steam,dt);
-			log_amx("[REGSYSTEM] FAILED QUERY %s",s_Query);
-			log_amx("[REGSYSTEM] Check_steam - >> %f",f_QueueTime);
+			//log_amx("[REGSYSTEM] FAILED QUERY %s",s_Query);
+			log_amx("[REGSYSTEM] Check_steam: nety steama - insert - >> %f ^n",f_QueueTime);
 			SQL_FreeHandle(h_Query);
 			SQL_ThreadQuery(g_SQLTuple, "q_handle", s_Query);
-	}else{//нет такого, тогда добавляем
+	}else{
 		//update dt
 			//log_amx("[REGSYSTEM] lets update");
 			new steam[32];
@@ -239,7 +239,7 @@ public Check_steam(i_FailState, Handle:h_Query, s_Error[], i_Errcode, s_Data[], 
 			get_user_authid(s_Data[0], steam, 31);
 			format(s_Query, charsmax(s_Query), "UPDATE `ibf_srr_steam` SET `date` = '%s' WHERE `steam` ='%s'",dt, steam);
 			//log_amx("[REGSYSTEM] %s",s_Query);
-			log_amx("[REGSYSTEM] Check_steam2 - >> %f",f_QueueTime);
+			log_amx("[REGSYSTEM] Check_steam: est steam - update - >> %f ^n",f_QueueTime);
 			SQL_FreeHandle(h_Query);
 			SQL_ThreadQuery(g_SQLTuple, "q_handle", s_Query);
 	}
@@ -258,7 +258,7 @@ public q_handle(i_FailState, Handle:h_Query, s_Error[], i_Errcode, s_Data[], i_D
     else if (i_Errcode)
         log_amx("Error on query: %s", s_Error)
 	//else log_amx("[REGSYSTEM] end of insert/update - >> %f",get_gametime()-g_Point2);
-	else log_amx("[REGSYSTEM] q_handle - >> %f",f_QueueTime);
+	else log_amx("[REGSYSTEM] q_handle: end of isert/update - >> %f ^n",f_QueueTime);
 }
 
 public Check_hddsn(i_FailState, Handle:h_Query, s_Error[], i_Errcode, s_Data[], i_DataSize, Float:f_QueueTime)
@@ -295,7 +295,7 @@ public Check_hddsn(i_FailState, Handle:h_Query, s_Error[], i_Errcode, s_Data[], 
 			
 			//console_print(s_Data[0],"регистрационный номер %s%s%s",hash1,regNumber,hash2);
 			//log_amx("[REGSYSTEM] output ID - >> %f",get_gametime()-g_Point);
-			log_amx("[REGSYSTEM] Check_hddsn - >> %f",f_QueueTime);
+			log_amx("[REGSYSTEM] Check_hddsn: vidali regkey, yje regalsa ranee - >> %f ^n",f_QueueTime);
         }else{		
 			new hddsn[32];	
 			new steam[32];
@@ -309,7 +309,7 @@ public Check_hddsn(i_FailState, Handle:h_Query, s_Error[], i_Errcode, s_Data[], 
 			format(s_Query, charsmax(s_Query), "INSERT INTO ibf_srr_hdd (hddsn) VALUES ('%s');INSERT INTO `ibf_srr_steam` (`hddsn`, `steam`, `date`) VALUES ('%s', '%s', '%s')",hddsn,hddsn, steam,dt);
 			//log_amx("[REGSYSTEM] insert hddsn - >> %f",get_gametime()-g_Point);
 			//log_amx("[REGSYSTEM] insert hddsn - >> %s",s_Query);
-			log_amx("[REGSYSTEM] Check_hddsn2 - >> %f",f_QueueTime);
+			log_amx("[REGSYSTEM] Check_hddsn: zaregali - >> %f ^n",f_QueueTime);
 			SQL_FreeHandle(h_Query);
 			SQL_ThreadQuery(g_SQLTuple, "reg_user", s_Query,qData,1);
 		}
@@ -332,7 +332,7 @@ public reg_user(i_FailState, Handle:h_Query, s_Error[], i_Errcode, s_Data[], i_D
 		format(s_Query, charsmax(s_Query), "SELECT id FROM ibf_srr_hdd WHERE hddsn='%s'", hddsn);
 		SQL_FreeHandle(h_Query);
 		//log_amx("[REGSYSTEM] reg_user - >> %f",get_gametime()-g_Point);
-		log_amx("[REGSYSTEM] reg_user - >> %f",f_QueueTime);
+		log_amx("[REGSYSTEM] reg_user: polychaem ego regkey, vidadim v Check_hddsn - >> %f",f_QueueTime);
 		SQL_ThreadQuery(g_SQLTuple, "Check_hddsn", s_Query,qData,1);
 	}
 		
